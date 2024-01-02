@@ -9,6 +9,7 @@ const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false); // New state to track submission attempt
 
   // Apollo mutation for logging in a user
   const [loginUser, { error }] = useMutation(LOGIN_USER);
@@ -20,10 +21,11 @@ const LoginForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+    setAttemptedSubmit(true); // Set that a submission has been attempted
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
+      return;
     }
 
     try {
@@ -43,9 +45,11 @@ const LoginForm = () => {
   return (
     <>
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-        <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert || error} variant='danger'>
-          Something went wrong with your login credentials! {error ? error.message : ''}
-        </Alert>
+        {attemptedSubmit && (showAlert || error) && (
+          <Alert dismissible onClose={() => setShowAlert(false)} show={true} variant='danger'>
+            Something went wrong with your login credentials! {error ? error.message : ''}
+          </Alert>
+        )}
         <Form.Group className='mb-3'>
           <Form.Label htmlFor='email'>Email</Form.Label>
           <Form.Control
