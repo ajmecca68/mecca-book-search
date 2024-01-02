@@ -9,6 +9,7 @@ const SignupForm = () => {
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);  // New state to track submission attempt
 
   // Apollo mutation for adding a user
   const [addUser, { error }] = useMutation(ADD_USER);
@@ -20,15 +21,15 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+    setAttemptedSubmit(true);  // Set that a submission has been attempted
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
+      return;
     }
 
     try {
       const { data } = await addUser({ variables: { ...userFormData } });
-      
       Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
@@ -45,9 +46,11 @@ const SignupForm = () => {
   return (
     <>
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-        <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert || error} variant='danger'>
-          Something went wrong with your signup! {error ? error.message : ''}
-        </Alert>    
+        {attemptedSubmit && (showAlert || error) && (
+          <Alert dismissible onClose={() => setShowAlert(false)} show={true} variant='danger'>
+            Something went wrong with your signup! {error ? error.message : ''}
+          </Alert>
+        )}   
         <Form.Group className='mb-3'>
           <Form.Label htmlFor='username'>Username</Form.Label>
           <Form.Control
