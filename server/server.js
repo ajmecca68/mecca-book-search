@@ -4,16 +4,16 @@ const { ApolloServer } = require('apollo-server-express');
 const db = require('./config/connection');
 const AuthService = require('./utils/auth');
 
-const typeDefs = require('./schemas/typeDefs');
-const resolvers = require('./schemas/resolvers');
+const {typeDefs,resolvers} = require('./schemas');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-async function startApolloServer(typeDefs, resolvers) {
+(async function (){
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    introspection: true,
     context: ({ req }) => {
       // Use the authenticate method from AuthService to check user credentials
       const authService = new AuthService();
@@ -41,6 +41,6 @@ async function startApolloServer(typeDefs, resolvers) {
   db.once('open', () => {
     app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
   });
-}
+})()
 
-startApolloServer(typeDefs, resolvers);
+// startApolloServer(typeDefs, resolvers);
