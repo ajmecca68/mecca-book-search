@@ -2,11 +2,11 @@ const express = require('express');
 const path = require('path');
 const { ApolloServer } = require('apollo-server-express');
 const db = require('./config/connection');
-const AuthService = require('./auth'); // Assuming auth.js is in the same directory
+const AuthService = require('./utils/auth');
 
 // Import your type definitions and resolvers
-const typeDefs = require('./schema'); // Adjust the path as necessary
-const resolvers = require('./resolvers'); // Adjust the path as necessary
+const typeDefs = require('./schemas/typeDefs'); 
+const resolvers = require('./schemas/resolvers'); 
 
 const app = express();
 const PORT = process.env.PORT || 3001;
