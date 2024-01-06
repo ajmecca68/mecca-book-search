@@ -1,6 +1,6 @@
-const { gql } = require('apollo-server-express');
+// const { gql } = require('apollo-server-express');
 
-const typeDefs = gql`
+const typeDefs = `
   # Define a type for the Book
   type Book {
     bookId: ID!
