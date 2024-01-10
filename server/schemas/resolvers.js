@@ -46,7 +46,6 @@ const resolvers = {
 
     // Mutation for saving a book
     saveBook: async (_, { input }, context) => {
-      console.log(context);
       if (!context.user) {
         throw new AuthenticationError('You need to be logged in!');
       }
